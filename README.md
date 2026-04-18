@@ -46,6 +46,22 @@ The target project must contain one of:
 - `.devcontainer/devcontainer.json`
 - `devcontainer.json`
 
+## Installing Nix on Non-NixOS
+
+If Nix is not already installed on the host, install it with the official installer:
+
+```bash
+sh <(curl -L https://nixos.org/nix/install) --daemon
+```
+
+Then enable flakes by adding this line to `/etc/nix/nix.conf`:
+
+```conf
+experimental-features = nix-command flakes
+```
+
+After updating `nix.conf`, restart the Nix daemon or open a new shell session before running `nix run`.
+
 ## Usage
 
 Run the flake against a project containing a devcontainer configuration:
@@ -70,10 +86,13 @@ nvim
 
 1. Install the host dependencies: `docker`, `devcontainer`, `bash`, `curl`, and `nix`.
 2. Ensure the target repository contains `.devcontainer/devcontainer.json` or `devcontainer.json`.
-3. Clone this repository or otherwise make the flake available locally.
-4. Run `nix run . -- /path/to/project` from this repository.
-5. Wait for the script to build the container, start it, install Nix, and install `neovim`.
-6. Use the interactive shell opened inside the container and launch `nvim`.
+3. If the host is not NixOS and Nix is not installed yet, run `sh <(curl -L https://nixos.org/nix/install) --daemon`.
+4. Add `experimental-features = nix-command flakes` to `/etc/nix/nix.conf`.
+5. Open a new shell session, or restart the Nix daemon if needed.
+6. Clone this repository or otherwise make the flake available locally.
+7. Run `nix run . -- /path/to/project` from this repository.
+8. Wait for the script to build the container, start it, install Nix, and install `neovim`.
+9. Use the interactive shell opened inside the container and launch `nvim`.
 
 ## Why Not Host-Side `clangd`
 
