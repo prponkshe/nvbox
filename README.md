@@ -1,6 +1,6 @@
 # devcontainer-nvim
 
-`devcontainer-nvim` is a small Nix flake that bootstraps a devcontainer, installs Nix inside it if needed, installs a current `neovim` from `nixpkgs`, and opens an interactive shell in the container.
+`devcontainer-nvim` is a small Nix flake that bootstraps a devcontainer, installs Nix inside it if needed, installs a current `neovim` from `nixpkgs`, copies the host Neovim config into the container user's home, and opens an interactive shell in the container.
 
 ## Motivation
 
@@ -15,6 +15,7 @@ This flake takes a narrow approach:
 - keep the existing devcontainer workflow
 - install Nix inside the container
 - install a recent `neovim` from `nixpkgs`
+- copy the host `~/.config/nvim` into the container user's `~/.config`
 - run Neovim where the project environment already exists
 
 If you are not already heavily invested in Neovim, Zed is a strong alternative. This repository is mainly for the case where the preferred editor is still Neovim and the container image is the limiting factor.
@@ -27,7 +28,8 @@ Running the app performs these steps:
 2. Start the devcontainer.
 3. Install Nix inside the container if it is missing.
 4. Install `neovim` from `nixpkgs`.
-5. Open an interactive shell inside the container.
+5. Copy the host `~/.config/nvim` into the container user's `~/.config`.
+6. Open an interactive shell inside the container.
 
 The flake is intentionally thin. It does not provide Docker, the Dev Container CLI, or other host tooling.
 
@@ -91,7 +93,7 @@ nvim
 5. Open a new shell session, or restart the Nix daemon if needed.
 6. Clone this repository or otherwise make the flake available locally.
 7. Run `nix run . -- /path/to/project` from this repository.
-8. Wait for the script to build the container, start it, install Nix, and install `neovim`.
+8. Wait for the script to build the container, start it, install Nix, install `neovim`, and copy `~/.config/nvim` into the container.
 9. Use the interactive shell opened inside the container and launch `nvim`.
 
 ## Why Not Host-Side `clangd`
@@ -115,4 +117,4 @@ Once language tooling moves outside that environment, editor behavior starts to 
 
 ## Scope
 
-This repository does not try to solve full editor provisioning, dotfiles management, or plugin setup. It only provides a small wrapper around an existing devcontainer workflow so that a recent Neovim can run inside the container.
+This repository does not try to solve full editor provisioning, general dotfiles management, or plugin setup. It only provides a small wrapper around an existing devcontainer workflow so that a recent Neovim can run inside the container with a copied host `~/.config/nvim`.
