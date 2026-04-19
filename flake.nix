@@ -23,6 +23,7 @@
           REPO_DIR="''${1:-.}"
           REPO_DIR="$(cd "$REPO_DIR" && pwd)"
           HOST_NVIM_CONFIG="$HOME/.config/nvim"
+          HOST_SSH_CONFIG="$HOME/.ssh"
 
           require() {
             if ! command -v "$1" >/dev/null 2>&1; then
@@ -117,6 +118,8 @@
 
             docker exec "$CONTAINER_ID" sh -lc 'mkdir -p "$1/.config"' sh "$CONTAINER_HOME"
             docker cp -L "$HOST_NVIM_CONFIG" "$CONTAINER_ID:$CONTAINER_HOME/.config/"
+            docker cp -L "$HOST_SSH_CONFIG" "$CONTAINER_ID:$CONTAINER_HOME/"
+            docker exec "$CONTAINER_ID" chown -R "$CONTAINER_UID:$CONTAINER_GID" "$CONTAINER_HOME/.ssh"
             docker exec -u 0 "$CONTAINER_ID" sh -lc 'chown -R "$1:$2" "$3"' sh "$CONTAINER_UID" "$CONTAINER_GID" "$CONTAINER_HOME/.config/nvim"
 
             echo "copied $HOST_NVIM_CONFIG to $CONTAINER_USER:$CONTAINER_HOME/.config/nvim"
